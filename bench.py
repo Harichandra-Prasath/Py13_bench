@@ -1,6 +1,8 @@
 import threading
 import time
 
+from multiprocessing import Process
+
 def benchmark(no_debug: bool):
     def fib(n):
             if n<=1:
@@ -21,10 +23,24 @@ def benchmark(no_debug: bool):
 
 
 
+def multi_proc_flow():
+    _procs : list[Process] = list()
+
+    print("Starting Multi-Process Flow")
+    start = time.perf_counter()
+    for i in range(3):
+        proc = Process(target=benchmark, args=(True,))
+        _procs.append(proc)
+        proc.start()
+
+    for _,proc in enumerate(_procs):
+        proc.join()
+    print("Time taken to complete three jobs with three Processes: ", time.perf_counter()-start)
+
 def thread_flow():
     _threads : list[threading.Thread] = list()
 
-    print("Starting Parallel Flow")
+    print("Starting Multi-Threaded Flow")
     start = time.perf_counter()
     for i in range(3):
         x = threading.Thread(target=benchmark, args=(True,))
@@ -46,4 +62,6 @@ print("----------------")
 linear_flow()
 print("----------------")
 thread_flow()
+print("----------------")
+multi_proc_flow()
 print("----------------")
